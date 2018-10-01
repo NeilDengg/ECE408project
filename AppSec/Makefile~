@@ -51,6 +51,6 @@ clean:
 	rm -f $(programs)
 
 permissions:
-	sudo chown root:ubuntu 1.2.[123456789] 1.2.10 1.2.11
+	sudo chown root:ubuntu 1.2.[123456789] 1.2.10 1.2.11 1.1.5
 	sudo chmod 6777 1.2.[123456789] 1.2.10 1.2.11
 	
