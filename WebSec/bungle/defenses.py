@@ -26,6 +26,8 @@ class XSSEncodeAngles(object):
     @staticmethod
     def filter(user_input):
         #TODO: complete this filter definition
+	user_input=user_input.replace('<','&lt;')
+	user_input=user_input.replace('>','&gt;')
         return user_input	
 
 ############################################################
@@ -52,9 +54,10 @@ class CSRFToken(object):
     @staticmethod
     def init(request, response):
         token = request.get_cookie("csrf_token")
-
+	if token is None:
+	    token=md5("generate").hexdigest()
         #TODO: implement Token validation
-
+	response.set_cookie("csrf_token",token)
         return token
     @staticmethod
     def formHTML(token):
