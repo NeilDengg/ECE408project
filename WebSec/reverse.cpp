@@ -28,7 +28,7 @@ int main(){
 	MD5_Final(md5,&c);
 	result =(char*) md5;
 	match=strstr(result,"'||'");
-	if(i%10000==0){
+	if(i%100000==0){
 	cout<<i<<endl;}
 	if(match==NULL)
 		match=strcasestr(result,"'or'");

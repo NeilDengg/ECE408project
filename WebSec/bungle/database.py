@@ -24,8 +24,9 @@ def createUser(username, password):
     db_rw = connect()
     cur = db_rw.cursor()
     #TODO: Implement a prepared statement using cur.execute() so that this query creates a row in table user
+    cur.execute("insert into users (username,password) values (\'%s\',\'%s\');" %(username,password))    
     db_rw.commit()
-    cur.execute("insert into users (username,password) values (\'%s\',\'%s\');" %(username,password))
+    
 def validateUser(username, password):
     """ validates if username,password pair provided by user is correct or not
     @param username: username of user
@@ -36,7 +37,7 @@ def validateUser(username, password):
     db_rw = connect()
     cur = db_rw.cursor()
     #TODO: Implement a prepared statement using cur.execute() so that this query selects a row from table user
-    cur.execute("select username from username where username = \'%s\' and password = \'%s\'" %(username, password))
+    cur.execute("select password from users where username = \'%s\' and password = \'%s\'" %(username, password))
     if cur.rowcount < 1:
         return False
     return True
@@ -53,7 +54,7 @@ def fetchUser(username):
     cur = db_rw.cursor(mdb.cursors.DictCursor)
     print username
     #TODO: Implement a prepared statement so that this query selects a id and username of the row which has column username = username
-    cur.execute("select id,username from username where username = \'%s\'" % (username))
+    cur.execute("select id,username from users where username = \'%s\'" % (username))
     if cur.rowcount < 1:
         return None
     return FormsDict(cur.fetchone())

