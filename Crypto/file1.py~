@@ -1,0 +1,1 @@
+#!/user/bin/python# -*- coding:utf-8 -*-blob="""\00\00\00\00\00\00\00\00\00\00\00\00\00\D8F{\B2<\BD\B5D P\81\B6\B4#\CC:\B7[0\FE\F8\FCA9u)@\B21\82\FD\C5\DA\CEbSO\DE8|Zg\ECaV=b\963\A1Q\93\93􁽏\D2f\CE\D0L˪S\91H:E\F7\91s,\\9F\C2\C0\8D\C30X\A7_\88\D8\CFun8\9FFm4u<\CC{]\B8\BC\FBB\83\85\9Br\B3l\99e\81\E3."""from hashlib import sha256print sha256(blob).hexdigest()
